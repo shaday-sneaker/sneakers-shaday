@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sneakers Shaday | Tienda de Sneakers Urbanos</title>
+  <meta name="description" content="Catálogo exclusivo de sneakers urbanos y calzados streetwear en Santa Cruz y Warnes, Bolivia." />
+  
+  <!-- Tipografía & Iconos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- SDK Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Barra Superior de Avisos -->
+  <div class="top-announcement">
+    <div class="announcement-content">
+      <span><i class="fa-solid fa-truck-fast"></i> Envíos a toda Bolivia | Entregas en Santa Cruz y Warnes</span>
+      <span class="announcement-tag"><i class="fa-brands fa-whatsapp"></i> Pedidos 24/7</span>
+    </div>
+  </div>
+
+  <!-- Cabecera Principal Adaptativa -->
+  <header class="main-header">
+    <div class="header-container">
+      
+      <!-- Fila Superior: Marca y Acciones de Usuario -->
+      <div class="header-top-row">
+        <a href="index.html" class="brand-logo">
+          <i class="fa-solid fa-shoe-prints"></i>
+          <span>SHADAY<span>.</span></span>
+        </a>
+
+        <!-- Contenedor dinámico de usuario (en móvil son botones compactos de icono) -->
+        <div class="header-actions" id="authHeaderContainer">
+          <button class="header-icon-btn" onclick="openAuthModal()" title="Mi Cuenta">
+            <i class="fa-solid fa-user"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Fila Inferior: Buscador en vivo (en móvil toma el 100% sin desbordar) -->
+      <div class="header-search-row">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="searchInput" placeholder="Buscar sneaker por marca, modelo o color..." autocomplete="off" />
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Banner Hero Principal -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <span class="hero-tag"><i class="fa-solid fa-bolt"></i> Drop Urbano 2026</span>
+      <h1>ESTILO CALLEJERO & COLECCIÓN EXCLUSIVA</h1>
+      <p>Descubre los sneakers más cotizados: Jordan, Nike Dunk, Adidas, New Balance y lanzamientos streetwear con garantía de autenticidad.</p>
+      <div class="hero-buttons">
+        <a href="#catalogo" class="btn-primary"><i class="fa-solid fa-bag-shopping"></i> Ver Catálogo</a>
+        <a href="https://wa.me/59169576123?text=Hola%20Sneakers%20Shaday,%20quiero%20hacer%20una%20consulta" target="_blank" class="btn-secondary">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </a>
+      </div>
+    </div>
+    <div class="hero-image-wrapper">
+      <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80" alt="Sneakers Shaday Colección" class="hero-img" />
+    </div>
+  </section>
+
+  <!-- Sección Catálogo -->
+  <section class="catalog-section" id="catalogo">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Catálogo de Sneakers</h2>
+        <p class="section-subtitle">Stock actualizado para entrega inmediata</p>
+      </div>
+      <div class="filter-count">
+        <span id="resultsCount">Cargando modelos...</span>
+      </div>
+    </div>
+
+    <!-- Filtros de Marcas (Deslizables en móvil) y Selector de Tallas -->
+    <div class="filters-container">
+      <div class="category-pills" id="categoryPills">
+        <button class="pill active" data-category="todos">Todos</button>
+        <button class="pill" data-category="Jordan">Jordan</button>
+        <button class="pill" data-category="Nike">Nike</button>
+        <button class="pill" data-category="Adidas">Adidas</button>
+        <button class="pill" data-category="New Balance">New Balance</button>
+        <button class="pill" data-category="Vans">Vans</button>
+        <button class="pill" data-category="Puma">Puma</button>
+      </div>
+
+      <div class="secondary-filters">
+        <select id="sizeFilter" class="filter-select">
+          <option value="">Todas las Tallas</option>
+          <option value="37">Talla 37</option>
+          <option value="38">Talla 38</option>
+          <option value="39">Talla 39</option>
+          <option value="40">Talla 40</option>
+          <option value="41">Talla 41</option>
+          <option value="42">Talla 42</option>
+          <option value="43">Talla 43</option>
+          <option value="44">Talla 44</option>
+        </select>
+
+        <select id="sortFilter" class="filter-select">
+          <option value="default">Novedades</option>
+          <option value="price-asc">Precio: Menor a Mayor</option>
+          <option value="price-desc">Precio: Mayor a Menor</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Cuadrícula de Sneakers -->
+    <div class="products-grid" id="productsGrid"></div>
+  </section>
+
+  <!-- Beneficios de Compra -->
+  <section class="features-section">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <h3>Calidad y Selección</h3>
+      <p>Modelos inspeccionados físicamente antes de cada despacho.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-solid fa-qrcode"></i></div>
+      <h3>Pago con Código QR</h3>
+      <p>Aceptamos transferencias QR de cualquier banco de Bolivia.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="fa-brands fa-whatsapp"></i></div>
+      <h3>Atención Inmediata</h3>
+      <p>Coordinación de tallas y entregas en tiempo real por WhatsApp.</p>
+    </div>
+  </section>
+
+  <!-- ================= BOTÓN FLOTANTE DEL CARRITO (FAB FIJO) ================= -->
+  <button id="floatingCartBtn" class="floating-cart-btn" title="Ver Carrito de Compras" aria-label="Carrito de compras">
+    <i class="fa-solid fa-bag-shopping"></i>
+    <span id="floatingCartCount" class="floating-cart-badge">0</span>
+  </button>
+
+  <!-- Modal: Detalle de Producto -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-content modal-shoe-detail">
+      <button class="close-modal-btn" id="closeModal" aria-label="Cerrar">&times;</button>
+      <div class="modal-body-scrollable" id="modalProductDetails"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Login y Registro -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-content modal-auth-box">
+      <button class="close-modal-btn" onclick="closeAuthModal()" aria-label="Cerrar">&times;</button>
+      
+      <div class="auth-tabs">
+        <button id="tabLoginBtn" class="pill active" onclick="switchAuthTab('login')">Iniciar Sesión</button>
+        <button id="tabRegisterBtn" class="pill" onclick="switchAuthTab('register')">Registrarse</button>
+      </div>
+
+      <!-- Login -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <h3>Acceso al Sistema</h3>
+        <p class="auth-subtitle">Ingresa con tus datos de cliente o administrador.</p>
+        
+        <div class="form-group-ui">
+          <label>Correo Electrónico</label>
+          <input type="email" id="loginEmail" placeholder="admin@shaday.com o tu email" required />
+        </div>
+        <div class="form-group-ui">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <button type="submit" class="btn-primary btn-block">
+          <i class="fa-solid fa-right-to-bracket"></i> Ingresar
+        </button>
+      </form>
+
+      <!-- Registro -->
+      <form id="registerForm" onsubmit="handleRegister(event)" style="display:none;">
+        <h3>Crear Cuenta</h3>
+        <p class="auth-subtitle">Crea tu cuenta para realizar tus pedidos.</p>
+        
+        <div class="form-group-ui">
+          <label>Nombre Completo</label>
+          <input type="text" id="regName" placeholder="Tu nombre" required />
+        </div>
+        <div class="form-group-ui">
+          <label>Correo Electrónico</label>
+          <input type="email" id="regEmail" placeholder="correo@ejemplo.com" required />
+        </div>
+        <div class="form-group-ui">
+          <label>Contraseña (mínimo 6 caracteres)</label>
+          <input type="password" id="regPassword" placeholder="••••••••" minlength="6" required />
+        </div>
+        <button type="submit" class="btn-primary btn-block">
+          <i class="fa-solid fa-user-plus"></i> Registrarme
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Carrito Lateral (Drawer) -->
+  <div class="cart-drawer-overlay" id="cartOverlay"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-drawer-header">
+      <h3><i class="fa-solid fa-bag-shopping"></i> Tu Carrito</h3>
+      <button class="close-cart-btn" id="closeCart">&times;</button>
+    </div>
+    <div class="cart-items-container" id="cartItemsList"></div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal">
+        <span>Total:</span>
+        <strong id="cartTotalPrice">0 Bs.</strong>
+      </div>
+      <button id="checkoutBtn" class="btn-whatsapp-checkout">
+        <i class="fa-brands fa-whatsapp"></i> Finalizar Pedido por WhatsApp
+      </button>
+      <button id="clearCartBtn" class="btn-clear-cart">Vaciar Carrito</button>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h3>SNEAKERS SHADAY</h3>
+        <p>Tu tienda especializada en calzado urbano y sneakers streetwear en Warnes y Santa Cruz, Bolivia.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Horarios</h4>
+        <p>Lunes a Sábado: 08:30 - 20:00</p>
+        <p>Pedidos Web & WhatsApp: 24 Horas</p>
+      </div>
+      <div class="footer-col">
+        <h4>Modalidades de Pago</h4>
+        <p><i class="fa-solid fa-qrcode"></i> Código QR Simple (Cualquier Banco)</p>
+        <p><i class="fa-solid fa-money-bill-wave"></i> Efectivo contra entrega local</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Sneakers Shaday - Proyecto de Bachillerato Técnico Humanístico (BTH).</p>
+    </div>
+  </footer>
+
+  <!-- ================= BOTÓN FLOTANTE SHADAY AI (ESQUINA INFERIOR IZQUIERDA) ================= -->
+  <button id="floatingAiBtn" class="floating-ai-btn" title="Asesor de Tallas & Outfit con IA" aria-label="Abrir asistente de IA">
+    <i class="fa-solid fa-wand-magic-sparkles"></i>
+    <span class="floating-ai-label">Shaday AI</span>
+  </button>
+
+  <!-- ================= MODAL / CHATBOT SHADAY AI STYLIST ================= -->
+  <div class="ai-chat-overlay" id="aiChatOverlay"></div>
+  <aside class="ai-chat-drawer" id="aiChatDrawer">
+    
+    <!-- Cabecera del Chat -->
+    <div class="ai-chat-header">
+      <div class="ai-header-info">
+        <div class="ai-avatar"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <h3>Shaday AI Stylist</h3>
+          <span class="ai-status-badge"><i class="fa-solid fa-circle"></i> Online | Gemini 1.5 Flash</span>
+        </div>
+      </div>
+      <button class="ai-close-btn" id="closeAiChatBtn" aria-label="Cerrar chat">&times;</button>
+    </div>
+
+    <!-- Área de Mensajes -->
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <div class="ai-msg bot-msg">
+        <div class="ai-bubble">
+          ¡Hola! Soy <strong>Shaday AI Stylist</strong>, tu asesor personal de zapatillas urbanas y streetwear en Warnes. 👟✨<br><br>
+          Puedo ayudarte a:
+          <ul>
+            <li>Calcular tu talla exacta según los <strong>centímetros (CM)</strong> de tu pie y el tipo de horma.</li>
+            <li>Recomendarte qué sneaker comprar según tu <strong>presupuesto en Bolivianos</strong>.</li>
+            <li>Combinar zapatillas con tu ropa (cargos, joggers, poleras oversize).</li>
+          </ul>
+          Elige una consulta rápida o escríbeme directamente abajo:
+        </div>
+      </div>
+    </div>
+
+    <!-- Chips de Consulta Rápida -->
+    <div class="ai-quick-chips" id="aiQuickChips">
+      <button class="chip-btn" onclick="sendQuickPrompt('¿Cómo mido mi pie en centímetros para saber mi talla exacta y qué modelos son de horma chica o amplia?')">
+        📏 Medir pie en CM y Tallas
+      </button>
+      <button class="chip-btn" onclick="sendQuickPrompt('Tengo un presupuesto de 600 a 800 Bs. ¿Qué sneakers de su catálogo me recomiendas?')">
+        💰 Recomendar por presupuesto en Bs.
+      </button>
+      <button class="chip-btn" onclick="sendQuickPrompt('¿Qué zapatillas combinan con un pantalón cargo beige y polera oversize negra?')">
+        👕 Combinar Outfit Streetwear
+      </button>
+    </div>
+
+    <!-- Input de Texto y Botón Enviar -->
+    <form class="ai-chat-input-area" id="aiChatForm" onsubmit="handleSendAiMessage(event)">
+      <input type="text" id="aiUserInput" placeholder="Pregunta sobre tallas, horma o estilo..." autocomplete="off" required />
+      <button type="submit" class="ai-send-btn" id="aiSendBtn" aria-label="Enviar mensaje">
+        <i class="fa-solid fa-paper-plane"></i>
+      </button>
+    </form>
+  </aside>
+
+  <script src="app.js"></script>
+  <script src="ai-stylist.js"></script>
+</body>
+</html>
